@@ -30,7 +30,7 @@ export default function App() {
   return (
     <div className="min-h-screen relative overflow-hidden text-white">
       <Background3D />
-      
+
       <div className="relative z-10 flex h-screen">
         <aside className="w-64 glass-panel border-y-0 border-l-0 flex flex-col">
           <div className="p-8">
@@ -51,8 +51,8 @@ export default function App() {
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
                   className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 ${
-                    isActive 
-                      ? 'bg-white/10 text-neon-blue shadow-[inset_2px_0_0_#00f3ff]' 
+                    isActive
+                      ? 'bg-white/10 text-neon-blue shadow-[inset_2px_0_0_#00f3ff]'
                       : 'text-gray-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
@@ -73,6 +73,10 @@ export default function App() {
         </aside>
 
         <main className="flex-1 p-8 overflow-y-auto">
+          <div className="flex justify-end mb-4 space-x-3">
+            <span className="text-xs font-mono text-gray-400 bg-white/5 border border-white/10 px-3 py-1 rounded-full">Aditya Roy</span>
+            <span className="text-xs font-mono text-gray-400 bg-white/5 border border-white/10 px-3 py-1 rounded-full">Prakitesh Bakshi</span>
+          </div>
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
