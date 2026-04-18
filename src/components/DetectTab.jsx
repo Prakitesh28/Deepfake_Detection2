@@ -23,24 +23,32 @@ export default function DetectTab() {
       handleFileSelection(e.dataTransfer.files[0]);
     }
   };
+const handleFileSelection = (selectedFile) => {
+  setFile({ url: URL.createObjectURL(selectedFile), raw: selectedFile });
+  setResult(null);
+};
 
-  const handleFileSelection = (selectedFile) => {
-    setFile(URL.createObjectURL(selectedFile));
-    setResult(null);
-  };
-
-  const runAnalysis = () => {
-    setIsAnalyzing(true);
-    // Simulate API call to your backend
-    setTimeout(() => {
-      setIsAnalyzing(false);
-      setResult({
-        isDeepfake: true,
-        confidence: 94.2,
-        anomalies: ['Facial blending inconsistency', 'Unnatural eye specularity']
-      });
-    }, 2500);
-  };
+const runAnalysis = async () => {
+  setIsAnalyzing(true);
+  try {
+    const formData = new FormData();
+    formData.append("file", file.raw);
+    const response = await fetch("https://deepfake-detection2.onrender.com/predict", {
+      method: "POST",
+      body: formData,
+    });
+    const data = await response.json();
+    setResult({
+      isDeepfake: data.label === "FAKE",
+      confidence: (data.confidence * 100).toFixed(1),
+      anomalies: data.label === "FAKE" ? ["Model detected synthetic patterns"] : []
+    });
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setIsAnalyzing(false);
+  }
+};
 
   return (
     <div className="max-w-5xl mx-auto h-full flex flex-col">
@@ -62,7 +70,7 @@ export default function DetectTab() {
         >
           {file ? (
             <div className="w-full h-full flex flex-col items-center">
-              <img src={file} alt="Preview" className="max-h-64 object-contain rounded-lg mb-6 shadow-2xl" />
+              <img src={file.url} alt="Preview" className="max-h-64 object-contain rounded-lg mb-6 shadow-2xl" />
               <button 
                 onClick={runAnalysis}
                 disabled={isAnalyzing}
